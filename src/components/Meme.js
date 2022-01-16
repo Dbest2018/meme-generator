@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Meme = () => {
@@ -7,6 +7,13 @@ const Meme = () => {
     bottomText: "",
     randomImage: "http://i.imgflip.com/1bij.jpg",
   });
+  const [allMemes, setAllMemes] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.imgflip.com/get_memes")
+      .then((res) => res.json())
+      .then((data) => setAllMemes(data.data.memes));
+  }, []);
 
   const handleChange = (e) => {
     const { value, name } = e.target;
@@ -14,6 +21,17 @@ const Meme = () => {
       return {
         ...prevMeme,
         [name]: value,
+      };
+    });
+  };
+
+  const getRandomMemeImage = () => {
+    const randomIndex = Math.floor(Math.random() * allMemes.length);
+    const randomMemeImage = allMemes[randomIndex].url;
+    setMeme((prevMeme) => {
+      return {
+        ...prevMeme,
+        randomImage: randomMemeImage,
       };
     });
   };
@@ -34,7 +52,7 @@ const Meme = () => {
           onChange={handleChange}
           value={meme.bottomText}
         />
-        <button>Get a new meme image</button>
+        <button onClick={getRandomMemeImage}>Get a new meme image</button>
       </MemeForm>
       <MemeImage>
         <img src={meme.randomImage} alt="meme" />
@@ -88,6 +106,8 @@ const MemeImage = styled.div`
 
   > img {
     width: 100%;
+    height: 500px;
+    object-fit: cover;
   }
 
   .top {
