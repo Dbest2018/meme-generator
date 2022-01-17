@@ -107,7 +107,7 @@ const MemeImage = styled.div`
   > img {
     width: 100%;
     height: 500px;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .top {
